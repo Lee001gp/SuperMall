@@ -1,0 +1,1 @@
+import React from 'react'; export default function RegisterPage(){return <div><h3>RegisterPage</h3></div>;}

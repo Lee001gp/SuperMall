@@ -1,0 +1,26 @@
+version: '3.9'
+services:
+  postgres:
+    image: postgres:16
+    restart: always
+    env_file: ../.env
+    volumes: [pg_data:/var/lib/postgresql/data]
+  api:
+    image: node:20
+    working_dir: /app
+    command: bash -lc "npm ci && npm run db:migrate && npm run dev -w server"
+    env_file: ../.env
+    depends_on: [postgres]
+  jobs:
+    image: node:20
+    working_dir: /app
+    command: bash -lc "npm ci && npm run dev -w jobs"
+    env_file: ../.env
+    depends_on: [api]
+  nginx:
+    image: nginx:1.27
+    volumes: ['./nginx/supermall.conf:/etc/nginx/conf.d/default.conf:ro']
+    ports: ['80:80']
+    depends_on: [api]
+volumes:
+  pg_data:

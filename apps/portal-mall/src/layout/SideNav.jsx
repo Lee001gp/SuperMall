@@ -1,0 +1,1 @@
+import React from 'react'; export default function SideNav({items,onPick}){ return <aside style={{display:'flex',flexDirection:'column',gap:6,minWidth:200}}>{items.map(i=><button key={i} onClick={()=>onPick(i)}>{i}</button>)}</aside>; }

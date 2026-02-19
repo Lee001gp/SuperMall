@@ -1,0 +1,1 @@
+import React from 'react'; export default function ParkingPage(){ return <div><h2>Parking</h2><p>Save/Find car from mall actions.</p></div>; }

@@ -1,0 +1,1 @@
+import React from 'react'; export default function SpecialsPage(){ return <div><h2>Specials</h2></div>; }

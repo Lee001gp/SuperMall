@@ -1,0 +1,1 @@
+import React from 'react'; export default function MapPage(){ return <div><h2>Indoor Map</h2><p>Route planner UI is available via route endpoint.</p></div>; }

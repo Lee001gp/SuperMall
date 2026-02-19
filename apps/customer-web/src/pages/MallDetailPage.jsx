@@ -1,0 +1,1 @@
+import React,{useEffect,useState} from 'react'; import { endpoints } from '../api/endpoints'; export default function MallDetailPage({slug}){ const [d,setD]=useState(null); useEffect(()=>{ if(slug) endpoints.overview(slug).then(setD); },[slug]); if(!d) return <p>Loading mall...</p>; return <div><h2>Mall Detail</h2><p>Featured stores: {d.featuredStores?.length||0}</p></div>; }

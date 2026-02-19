@@ -1,0 +1,1 @@
+import React from 'react'; export default function TopBar(){ return <header style={{padding:'12px 0'}}><h1>SuperMall Customer</h1></header>; }

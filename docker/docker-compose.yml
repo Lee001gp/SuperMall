@@ -1,0 +1,28 @@
+version: '3.9'
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: supermall
+    ports: ['5432:5432']
+    volumes: ['pg_data:/var/lib/postgresql/data']
+
+  api:
+    image: node:20
+    working_dir: /app
+    volumes: ['../:/app']
+    command: bash -lc "npm install && npm run dev -w server"
+    ports: ['4000:4000']
+    depends_on: [postgres]
+
+  jobs:
+    image: node:20
+    working_dir: /app
+    volumes: ['../:/app']
+    command: bash -lc "npm install && npm run dev -w jobs"
+    depends_on: [api]
+
+volumes:
+  pg_data:

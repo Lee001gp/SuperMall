@@ -1,0 +1,1 @@
+import React from 'react'; import TopBar from './TopBar'; export default function AppShell({children}){ return <main style={{maxWidth:1200,margin:'0 auto',padding:16}}><TopBar/>{children}</main>; }

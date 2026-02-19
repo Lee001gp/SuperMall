@@ -1,0 +1,2 @@
+/** API client for portal pages. */
+export async function api(path, opts={}){ const headers={'Content-Type':'application/json',...(opts.headers||{})}; const t=localStorage.getItem('accessToken'); const tenant=localStorage.getItem('tenantId'); if(t) headers.Authorization=`Bearer ${t}`; if(tenant) headers['X-Tenant-ID']=tenant; const base=import.meta.env.VITE_API_BASE_URL||'http://localhost:4000'; const res=await fetch(base+path,{...opts,headers}); if(!res.ok) throw new Error(await res.text()); return res.json(); }

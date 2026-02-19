@@ -1,0 +1,1 @@
+import React,{useEffect,useState} from 'react'; import { endpoints } from '../api/endpoints'; export default function SocialPage(){ const [rows,setRows]=useState([]); useEffect(()=>{endpoints.posts().then(setRows)},[]); return <div><h2>Social</h2>{rows.map(p=><div key={p.id}>{p.body||p.text}</div>)}</div>; }

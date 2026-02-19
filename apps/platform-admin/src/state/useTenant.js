@@ -1,0 +1,1 @@
+import { useState } from 'react'; export function useTenant(){ const [tenant,setTenant]=useState(localStorage.getItem('tenantId')); return {tenant,setTenant}; }

@@ -1,0 +1,1 @@
+import React from 'react'; export default function MessagesPage(){ return <div><h2>Messages</h2></div>; }
