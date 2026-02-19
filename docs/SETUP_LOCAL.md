@@ -1,30 +1,52 @@
 # Local Setup
 
 ## Mode A — Full production-like (Postgres + Docker)
-1. `cp .env.example .env`
-2. `npm install`
-3. Ensure Docker is running.
-4. `npm run dev`
+1. `npm install`
+2. `npm run dev:postgres` (or `npm run dev` for auto-detect)
 
 ## Mode B — Standalone fallback (SQLite, no Docker)
-1. `cp .env.example .env`
-2. `npm install`
-3. `DB_MODE=sqlite SQLITE_PATH=data/dev.sqlite npm run dev`
+- Cross-platform shortcut: `npm run dev:sqlite`
 
-The dev orchestrator auto-detects Docker and will switch to SQLite fallback if Docker is unavailable.
+### Manual env syntax examples
+#### PowerShell
+```powershell
+$env:DB_MODE="sqlite"
+$env:SQLITE_PATH="data/dev.sqlite"
+npm run dev
+```
+
+#### CMD
+```cmd
+set DB_MODE=sqlite
+set SQLITE_PATH=data/dev.sqlite
+npm run dev
+```
+
+#### Bash
+```bash
+DB_MODE=sqlite SQLITE_PATH=data/dev.sqlite npm run dev
+```
+
+## Migrate / Seed
+- `npm run db:migrate`
+- `npm run db:seed`
+
+## Tests
+- `npm run test`
+- `npm run test:e2e` (auto Postgres/docker or SQLite fallback)
+- `npm run test:e2e:sqlite` (force sqlite)
+- `npm run smoke`
 
 ## Ports
-- API: `4000`
+- API: `4000` (e2e: `3000`)
 - Customer: `5173`
 - Store portal: `5174`
 - Mall portal: `5175`
 - Platform admin: `5176`
 
-## Database lifecycle
-- Migrate: `npm run db:migrate`
-- Seed: `npm run db:seed`
-
-## Tests
-- Unit/integration: `npm run test`
-- E2E (Docker-aware, SQLite fallback): `npm run test:e2e`
-- Smoke: `npm run smoke`
+## Beginner flow (Windows ZIP users)
+1. Unzip repo.
+2. Open terminal in repo.
+3. Run `npm install`.
+4. Run `npm run dev`.
+5. Run `npm run test`.

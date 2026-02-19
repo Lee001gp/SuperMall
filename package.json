@@ -18,7 +18,10 @@
     "test:e2e": "node scripts/start_test_stack.js",
     "db:migrate": "node db/migrate.js",
     "db:seed": "node db/seed.js",
-    "smoke": "bash scripts/smoke_check.sh"
+    "smoke": "node scripts/smoke_check.js",
+    "dev:sqlite": "node scripts/dev_orchestrator.js --force-sqlite",
+    "dev:postgres": "node scripts/dev_orchestrator.js --force-postgres",
+    "test:e2e:sqlite": "node scripts/start_test_stack.js --force-sqlite"
   },
   "type": "module"
 }
