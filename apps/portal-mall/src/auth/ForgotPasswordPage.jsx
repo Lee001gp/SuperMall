@@ -1,0 +1,1 @@
+import React from 'react'; export default function ForgotPasswordPage(){return <div><h3>ForgotPasswordPage</h3></div>;}

@@ -1,0 +1,1 @@
+import React,{createContext,useContext,useState} from 'react'; const C=createContext(null); export function AuthProvider({children}){const [token,setToken]=useState(localStorage.getItem('accessToken')); return <C.Provider value={{token,setToken}}>{children}</C.Provider>} export const useAuth=()=>useContext(C);

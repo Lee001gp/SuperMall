@@ -1,0 +1,1 @@
+import React from 'react'; import TopBar from './TopBar'; import BottomNav from './BottomNav'; export default function AppShell({children}){ return <main style={{maxWidth:1000,margin:'0 auto',padding:16,paddingBottom:90}}><TopBar />{children}<BottomNav /></main>; }

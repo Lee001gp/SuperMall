@@ -1,0 +1,1 @@
+import { useState } from 'react'; export function useSession(){ const [token,setToken]=useState(localStorage.getItem('accessToken')); return {token,setToken}; }

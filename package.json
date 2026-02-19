@@ -1,0 +1,27 @@
+{
+  "name": "supermall-platform",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "apps/*",
+    "server",
+    "jobs"
+  ],
+  "scripts": {
+    "dev": "node scripts/dev_orchestrator.js",
+    "dev:server": "npm run dev -w server",
+    "dev:apps": "node scripts/dev_orchestrator.js --apps-only",
+    "dev:db": "docker compose -f docker/docker-compose.yml up -d postgres",
+    "build": "npm run build -w apps/customer-web && npm run build -w apps/portal-store && npm run build -w apps/portal-mall && npm run build -w apps/platform-admin",
+    "start": "docker compose -f docker/docker-compose.prod.yml up -d",
+    "test": "node --test server/src/*.test.js",
+    "test:e2e": "node scripts/start_test_stack.js",
+    "db:migrate": "node db/migrate.js",
+    "db:seed": "node db/seed.js",
+    "smoke": "node scripts/smoke_check.js",
+    "dev:sqlite": "node scripts/dev_orchestrator.js --force-sqlite",
+    "dev:postgres": "node scripts/dev_orchestrator.js --force-postgres",
+    "test:e2e:sqlite": "node scripts/start_test_stack.js --force-sqlite"
+  },
+  "type": "module"
+}
