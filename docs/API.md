@@ -1,4 +1,8 @@
-# API
+# API (current implemented endpoints)
+
+## Health
+- `GET /healthz`
+- `GET /readyz`
 
 ## Auth
 - `POST /auth/register`
@@ -9,17 +13,13 @@
 - `POST /auth/password-reset/confirm`
 - `POST /auth/join-tenant`
 
-## Health / Observability
-- `GET /healthz`
-- `GET /readyz`
-
 ## Customer
 - `GET /app/malls`
 - `GET /app/mall/:mallSlug/overview`
-- `GET /app/mall/:mallSlug/stores?q=`
+- `GET /app/mall/:mallSlug/stores`
 - `GET /app/mall/:mallSlug/store/:storeSlug`
-- `GET /api/mall/:mallSlug/distance?fromStoreId=&toStoreId=&accessible=`
-- `GET /api/mall/:mallSlug/route?fromPoiId=&toPoiId=&accessible=`
+- `GET /api/mall/:mallSlug/distance`
+- `GET /api/mall/:mallSlug/route`
 - `POST /app/mall/:mallSlug/parking/save-car`
 - `GET /app/mall/:mallSlug/parking/find-car`
 
@@ -37,9 +37,7 @@
 - `POST /store-portal/stores/:storeId/hours`
 - `POST /store-portal/stores/:storeId/contacts`
 - `POST /store-portal/stores/:storeId/gallery`
-- `POST /store-portal/promotions`
-- `PUT /store-portal/promotions/:id`
-- `DELETE /store-portal/promotions/:id`
+- `POST/PUT/DELETE /store-portal/promotions`
 - `POST /store-portal/events`
 - `GET /store-portal/reviews/:storeId`
 - `POST /store-portal/reviews/:reviewId/respond`
@@ -53,9 +51,9 @@
 - `GET /mall-admin/verification-requests`
 - `POST /mall-admin/verification-requests/:id/decision`
 - `GET/POST /mall-admin/floors`
-- `POST /mall-admin/pois`
-- `POST /mall-admin/path-nodes`
-- `GET/POST /mall-admin/path-edges`
+- `GET/POST /mall-admin/pois`
+- `GET/POST /mall-admin/path-nodes`
+- `GET/POST/PUT/DELETE /mall-admin/path-edges`
 - `GET/POST /mall-admin/parking-zones`
 - `POST /mall-admin/parking-zones/:id/snapshots`
 
@@ -65,7 +63,3 @@
 - `GET /platform/users`
 - `GET /platform/stores`
 - `POST /platform/impersonate/start`
-
-## Analytics
-- `POST /api/analytics/event`
-- `GET /admin/analytics/tenant`

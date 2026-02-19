@@ -1,15 +1,14 @@
 # Features Master Checklist (Truthful)
 
-## Done (DB + API + UI + tests)
-- [x] Single-command local dev orchestrator (`npm run dev`) with Docker-aware fallback.
-- [x] Customer app API wiring for auth, mall discovery, store detail, parking save/find, social interactions, walking distance query.
-- [x] Store portal API wiring for profile updates, promotions CRUD, events create, review responses, analytics cards.
-- [x] Mall admin API wiring for branding/layout version actions, moderation queue actions, verification decisions, floors/path/parking management.
-- [x] Platform admin API wiring for tenant governance and impersonation audit mode.
-- [x] Production hardening assets: health/readiness, request IDs, backup/restore scripts, prod compose and nginx sample.
-- [x] E2E harness supports Docker Postgres mode and Docker-less SQLite fallback mode.
+## Verified Done
+- [x] DB-backed API with Postgres default and SQLite fallback mode.
+- [x] Auth lifecycle endpoints and tenant resolution/guard middleware.
+- [x] Customer app restructured into multi-file app architecture (`api/`, `auth/`, `components/`, `layout/`, `pages/`, `state/`, `styles/`, `utils/`).
+- [x] Store/Mall/Platform portals restructured into multi-file app architecture with page modules.
+- [x] CRUD endpoint coverage expanded for mall map entities (POIs/nodes/edges read/update/delete support).
+- [x] Docker-aware e2e harness that falls back to SQLite when Docker is absent.
 
-## Remaining
-- [ ] Full deterministic Playwright assertions for all deep multi-role business flows.
-- [ ] Full DB integration coverage for every endpoint (expanded smoke coverage exists in `server/src/api.test.js`).
-- [ ] Advanced observability stack (metrics exporter, centralized logging backend, alerts).
+## Remaining (not falsely marked done)
+- [ ] Deep business-complete UI behavior on every page (many pages currently baseline API-driven and need richer forms/charts).
+- [ ] Full deterministic Playwright role-based end-to-end matrix with assertions for all governance workflows.
+- [ ] Comprehensive endpoint-level DB integration tests across all modules.

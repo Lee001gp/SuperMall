@@ -328,6 +328,12 @@ app.post('/mall-admin/parking-zones', requireAuth, requireRole('mall_admin'), as
 app.get('/mall-admin/parking-zones', requireAuth, requireRole('mall_admin'), async (req, res) => { const { rows } = await query('SELECT * FROM parking_zones WHERE tenant_id=$1::uuid ORDER BY zone_code', [req.tenant.id]); res.json(rows); });
 app.post('/mall-admin/parking-zones/:id/snapshots', requireAuth, requireRole('mall_admin'), async (req, res) => { await query('INSERT INTO parking_occupancy_snapshots(id,tenant_id,parking_zone_id,occupied) VALUES($1::uuid,$2::uuid,$3::uuid,$4)', [createId(), req.tenant.id, req.params.id, req.body.occupied]); res.status(201).json({ ok: true }); });
 
+
+app.get('/mall-admin/pois', requireAuth, requireRole('mall_admin'), async (req, res) => { const { rows } = await query('SELECT * FROM pois WHERE tenant_id=$1::uuid ORDER BY label', [req.tenant.id]); res.json(rows); });
+app.get('/mall-admin/path-nodes', requireAuth, requireRole('mall_admin'), async (req, res) => { const { rows } = await query('SELECT * FROM path_nodes WHERE tenant_id=$1::uuid', [req.tenant.id]); res.json(rows); });
+app.delete('/mall-admin/path-edges/:id', requireAuth, requireRole('mall_admin'), async (req, res) => { await query('DELETE FROM path_edges WHERE id=$1::uuid AND tenant_id=$2::uuid', [req.params.id, req.tenant.id]); res.json({ ok: true }); });
+app.put('/mall-admin/path-edges/:id', requireAuth, requireRole('mall_admin'), async (req, res) => { await query('UPDATE path_edges SET distance_meters=$1,accessible=$2 WHERE id=$3::uuid AND tenant_id=$4::uuid', [req.body.distanceMeters, req.body.accessible !== false, req.params.id, req.tenant.id]); res.json({ ok: true }); });
+
 // ---------- Platform admin ----------
 app.get('/platform/tenants', requireAuth, requireRole('platform_admin'), async (_req, res) => { const { rows } = await query('SELECT * FROM tenants ORDER BY created_at DESC'); res.json(rows); });
 app.post('/platform/tenants', requireAuth, requireRole('platform_admin'), async (req, res) => { const id = createId(); await query('INSERT INTO tenants(id,slug,name,plan,status) VALUES($1::uuid,$2,$3,$4,$5)', [id, req.body.slug, req.body.name, req.body.plan || 'standard', 'active']); res.status(201).json({ id }); });

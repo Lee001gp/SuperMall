@@ -1,21 +1,15 @@
 # Routes and Navigation
 
-## Customer (`apps/customer-web`)
-- Route shell driven by API data with action-button UX.
-- Bottom action bar: Home, Explore, Map, Specials, Social, More.
+## Customer Web (modularized)
+- Auth pages: Login/Register/Forgot/Reset components under `src/auth/`.
+- Core pages under `src/pages/`: discovery, mall detail, store directory/detail, map, parking, specials, events, social, messages, profile.
+- Navigation style: bottom action buttons + expandable More bottom sheet.
 
-## Store portal (`apps/portal-store`)
-- Store selection buttons
-- Profile edit controls
-- Promotions/events/reviews/analytics panels
+## Store Portal (modularized)
+- Pages: dashboard, profile, hours, gallery, promotions, events, messages, reviews.
 
-## Mall admin (`apps/portal-mall`)
-- Branding publish actions
-- Layout publish actions
-- Verification and moderation queues
-- Floors and parking editors
+## Mall Admin Portal (modularized)
+- Pages: dashboard, branding, layout, stores, verification, moderation, parking, map floors/pois/nodes/edges.
 
-## Platform admin (`apps/platform-admin`)
-- Tenant governance actions
-- User/store global lists
-- Impersonation audit-mode banner
+## Platform Admin (modularized)
+- Pages: dashboard, tenants, users, stores, moderation, impersonation.

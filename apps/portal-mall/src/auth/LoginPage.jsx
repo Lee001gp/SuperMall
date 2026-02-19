@@ -1,0 +1,1 @@
+import React from 'react'; export default function LoginPage(){return <div><h3>LoginPage</h3></div>;}
