@@ -13,6 +13,7 @@ import { query, withTx } from './db.js';
 import { authMiddleware, requireAuth, tenantResolver, tenantGuard, requireRole } from './middleware.js';
 import { createId, hashPassword, verifyPassword, signAccessToken, createRefreshToken, hashOpaqueToken } from './services.auth.js';
 import { planRoute } from './navigation.js';
+import { normalizeAnalyticsEvent, buildTenantAnalyticsSnapshot } from './analytics.js';
 
 const app = express();
 app.use(cors());
@@ -383,13 +384,62 @@ app.post('/platform/impersonate/start', requireAuth, requireRole('platform_admin
 // ---------- Analytics ----------
 app.post('/api/analytics/event', requireAuth, async (req, res) => {
   const tenantId = req.tenant?.id || req.body.tenantId;
-  await query('INSERT INTO analytics_events(id,tenant_id,user_id,store_id,event_name,properties) VALUES($1::uuid,$2::uuid,$3::uuid,$4::uuid,$5,$6::jsonb)', [createId(), tenantId, req.user.id, req.body.storeId || null, req.body.eventName, JSON.stringify(req.body.properties || {})]);
+  const normalized = normalizeAnalyticsEvent(req.body || {});
+  await query(
+    'INSERT INTO analytics_events(id,tenant_id,user_id,store_id,event_name,properties) VALUES($1::uuid,$2::uuid,$3::uuid,$4::uuid,$5,$6::jsonb)',
+    [createId(), tenantId, req.user.id, normalized.storeId || null, normalized.eventName, JSON.stringify(normalized.properties)]
+  );
   res.status(201).json({ ok: true });
 });
 app.get('/admin/analytics/tenant', requireAuth, async (req, res) => {
   const tenantId = req.user.globalRole === 'platform_admin' ? req.query.tenantId : req.tenant.id;
-  const { rows } = await query('SELECT metric_name,metric_value,metric_date,store_id FROM analytics_daily_rollups WHERE tenant_id=$1::uuid ORDER BY metric_date DESC LIMIT 300', [tenantId]);
+  const days = Math.max(1, Math.min(90, Number(req.query.days || 30)));
+  const { rows } = await query(
+    'SELECT metric_name,metric_value,metric_date,store_id FROM analytics_daily_rollups WHERE tenant_id=$1::uuid ORDER BY metric_date DESC LIMIT 2000',
+    [tenantId]
+  );
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - (days - 1));
+  const filteredRows = rows.filter((row) => new Date(String(row.metric_date)) >= cutoff);
+  const { rows: kpis } = await query(
+    'SELECT kpi_key,kpi_value,store_id FROM analytics_kpis WHERE tenant_id=$1::uuid ORDER BY calculated_at DESC LIMIT 100',
+    [tenantId]
+  );
+  res.json(buildTenantAnalyticsSnapshot(filteredRows, kpis));
+});
+
+// ---------- CRM ----------
+app.get('/crm/contacts', requireAuth, requireRole('mall_admin', 'store_owner', 'platform_admin'), async (req, res) => {
+  const tenantId = req.user.globalRole === 'platform_admin' ? req.query.tenantId : req.tenant.id;
+  const { rows } = await query(
+    `SELECT u.id, u.email, u.display_name,
+            COALESCE(sum(CASE WHEN ae.event_name='store_view' THEN 1 ELSE 0 END),0)::int AS store_views,
+            COALESCE(sum(CASE WHEN ae.event_name='promo_redemption' THEN 1 ELSE 0 END),0)::int AS redemptions,
+            max(ae.created_at) AS last_seen_at
+     FROM user_tenant_memberships m
+     JOIN users u ON u.id=m.user_id
+     LEFT JOIN analytics_events ae ON ae.user_id=u.id AND ae.tenant_id=m.tenant_id
+     WHERE m.tenant_id=$1::uuid
+     GROUP BY u.id, u.email, u.display_name
+     ORDER BY last_seen_at DESC NULLS LAST, u.created_at DESC
+     LIMIT 500`,
+    [tenantId]
+  );
   res.json(rows);
+});
+app.get('/crm/segments', requireAuth, requireRole('mall_admin', 'store_owner', 'platform_admin'), async (req, res) => {
+  const tenantId = req.user.globalRole === 'platform_admin' ? req.query.tenantId : req.tenant.id;
+  const { rows } = await query('SELECT id,name,description,rule_json,created_at FROM crm_segments WHERE tenant_id=$1::uuid ORDER BY created_at DESC', [tenantId]);
+  res.json(rows);
+});
+app.post('/crm/segments', requireAuth, requireRole('mall_admin', 'store_owner', 'platform_admin'), async (req, res) => {
+  const tenantId = req.user.globalRole === 'platform_admin' ? req.body.tenantId : req.tenant.id;
+  const id = createId();
+  await query(
+    'INSERT INTO crm_segments(id,tenant_id,name,description,rule_json,created_by) VALUES($1::uuid,$2::uuid,$3,$4,$5::jsonb,$6::uuid)',
+    [id, tenantId, req.body.name, req.body.description || '', JSON.stringify(req.body.rule || {}), req.user.id]
+  );
+  res.status(201).json({ id });
 });
 
 app.post('/uploads', requireAuth, upload.single('file'), (req, res) => res.status(201).json({ path: `/uploads/${path.basename(req.file.path)}` }));
